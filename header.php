@@ -43,7 +43,7 @@
     }
 
     .logo-image {
-        height: 90px; 
+        height: 100px; 
         width: auto;  
     }
 

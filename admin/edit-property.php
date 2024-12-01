@@ -10,6 +10,7 @@ require '../config.php';
 $id = $_GET['id'];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Retrieve form data
     $title = $_POST['title'];
     $price = $_POST['price'];
     $location = $_POST['location'];
@@ -17,16 +18,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $bathrooms = $_POST['bathrooms'];
     $description = $_POST['description'];
     $property_type = $_POST['property_type'];
+    
+    // Handle Image Upload
+    $image_url = null;
+    if (isset($_FILES['property_image']) && $_FILES['property_image']['error'] == 0) {
+        $image_tmp = $_FILES['property_image']['tmp_name'];
+        $image_name = $_FILES['property_image']['name'];
+        $image_ext = pathinfo($image_name, PATHINFO_EXTENSION);
+        $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+        
+        if (in_array(strtolower($image_ext), $allowed_extensions)) {
+            $image_url = 'uploads/' . time() . '.' . $image_ext;
+            move_uploaded_file($image_tmp, __DIR__ . '/../' . $image_url);
+        } else {
+            echo "Invalid image format.";
+            exit;
+        }
+    }
 
-    $query = "UPDATE properties SET title='$title', price='$price', location='$location', 
-              bedrooms='$bedrooms', bathrooms='$bathrooms', description='$description', 
-              property_type='$property_type' WHERE id='$id'";
+    // Update the property in the database using prepared statements
+    $query = "UPDATE properties SET title=?, price=?, location=?, bedrooms=?, bathrooms=?, description=?, property_type=?";
 
-    if ($conn->query($query) === TRUE) {
-        header("Location: manage-properties.php");
-        exit;
+    // Include the image_url in the query if an image is uploaded
+    if ($image_url) {
+        $query .= ", image_url=?";
+    }
+
+    $query .= " WHERE id=?";
+
+    // Prepare the statement
+    if ($stmt = $conn->prepare($query)) {
+        // Bind parameters
+        if ($image_url) {
+            $stmt->bind_param("sdsdssssi", $title, $price, $location, $bedrooms, $bathrooms, $description, $property_type, $image_url, $id);
+        } else {
+            $stmt->bind_param("sdsdssss", $title, $price, $location, $bedrooms, $bathrooms, $description, $property_type, $id);
+        }
+
+        // Execute the statement
+        if ($stmt->execute()) {
+            header("Location: manage-properties.php");
+            exit;
+        } else {
+            echo "Error: " . $stmt->error;
+        }
+
+        // Close the prepared statement
+        $stmt->close();
     } else {
-        echo "Error: " . $conn->error;
+        echo "Error preparing query: " . $conn->error;
     }
 }
 
@@ -132,6 +172,13 @@ $property = $result->fetch_assoc();
             margin-right: 10px;
         }
 
+        .property-form img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
         @media (max-width: 768px) {
             .property-form {
                 width: 90%;
@@ -165,7 +212,17 @@ $property = $result->fetch_assoc();
 
 <section class="property-form">
     <h2><i class="fas fa-home"></i> Property Details</h2>
-    <form method="POST" action="edit-property.php?id=<?php echo $id; ?>">
+
+    <!-- Display current image if it exists -->
+    <?php if (!empty($property['image_url'])): ?>
+        <div>
+            <img src="../uploads/<?php echo $property['image_url']; ?>" alt="Property Image">
+            <p>Current Image</p>
+            <a href="delete-image.php?id=<?php echo $id; ?>">Remove Image</a>
+        </div>
+    <?php endif; ?>
+
+    <form method="POST" action="edit-property.php?id=<?php echo $id; ?>" enctype="multipart/form-data">
         <label for="title"><i class="fas fa-pen icon"></i> Property Title:</label>
         <input type="text" name="title" id="title" value="<?php echo $property['title']; ?>" required><br>
 
@@ -190,7 +247,10 @@ $property = $result->fetch_assoc();
             <option value="Rent" <?php if ($property['property_type'] == 'Rent') echo 'selected'; ?>>Rent</option>
         </select><br>
 
-        <button type="submit"><i class="fas fa-save icon"></i> Update Property</button>
+        <label for="property_image"><i class="fas fa-image icon"></i> Upload New Image:</label>
+        <input type="file" name="property_image" id="property_image"><br>
+
+        <button type="submit"><i class="fas fa-save"></i> Save Changes</button>
     </form>
 </section>
 

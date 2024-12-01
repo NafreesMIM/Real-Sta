@@ -108,7 +108,7 @@ $result = $conn->query($sql);
                     $image = $images_result->fetch_assoc();
                     $imagePath = $image['image_path'];  
                 } else {
-                    $imagePath = 'assets/images/properties/default.jpg';  /
+                    $imagePath = 'assets/images/properties/default.jpg';  
                 }
 
                 echo "<div class='property-card'>
