@@ -7,42 +7,9 @@ if (!isset($_SESSION['admin'])) {
 
 require '../config.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $_POST['title'];
-    $price = $_POST['price'];
-    $location = $_POST['location'];
-    $bedrooms = $_POST['bedrooms'];
-    $bathrooms = $_POST['bathrooms'];
-    $description = $_POST['description'];
-    $property_type = $_POST['property_type'];
-
-    // Insert property data into the database
-    $query = "INSERT INTO properties (title, price, location, bedrooms, bathrooms, description, property_type) 
-              VALUES ('$title', '$price', '$location', '$bedrooms', '$bathrooms', '$description', '$property_type')";
-    if ($conn->query($query) === TRUE) {
-        $property_id = $conn->insert_id;  // Get the property ID for saving images
-
-        // Handle image uploads
-        if (isset($_FILES['images']) && count($_FILES['images']['name']) > 0) {
-            $target_dir = "../assets/images/properties/";
-            foreach ($_FILES['images']['name'] as $key => $image_name) {
-                $image_tmp = $_FILES['images']['tmp_name'][$key];
-                $image_path = $target_dir . basename($image_name);
-
-                // Move the uploaded image to the target directory
-                if (move_uploaded_file($image_tmp, $image_path)) {
-                    // Insert image path into the property_images table
-                    $sql_image = "INSERT INTO property_images (property_id, image_path) VALUES ('$property_id', '$image_path')";
-                    $conn->query($sql_image);
-                }
-            }
-        }
-
-        echo "Property added successfully!";
-    } else {
-        echo "Error: " . $conn->error;
-    }
-}
+// Fetch all properties from the database
+$sql = "SELECT * FROM properties";
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -50,50 +17,202 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Property - Manage Properties</title>
+    <title>Manage Properties</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <header>
-        <h1>Manage Properties</h1>
-        <nav>
-            <a href="dashboard.php">Dashboard</a>
-            <a href="logout.php">Logout</a>
-        </nav>
-    </header>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1><i class="fas fa-home"></i> Manage Properties</h1>
+            <nav class="dashboard-nav">
+                <a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </header>
 
-    <section class="property-form">
-        <h2>Add Property</h2>
-        <form method="POST" action="add-property.php" enctype="multipart/form-data">
-            <label for="title">Property Title:</label>
-            <input type="text" name="title" id="title" required><br><br>
-
-            <label for="price">Price:</label>
-            <input type="number" name="price" id="price" required><br><br>
-
-            <label for="location">Location:</label>
-            <input type="text" name="location" id="location" required><br><br>
-
-            <label for="bedrooms">Bedrooms:</label>
-            <input type="number" name="bedrooms" id="bedrooms" required><br><br>
-
-            <label for="bathrooms">Bathrooms:</label>
-            <input type="number" name="bathrooms" id="bathrooms" required><br><br>
-
-            <label for="description">Description:</label>
-            <textarea name="description" id="description" required></textarea><br><br>
-
-            <label for="property_type">Property Type:</label>
-            <select name="property_type" id="property_type" required>
-                <option value="Sale">Sale</option>
-                <option value="Rent">Rent</option>
-            </select><br><br>
-
-            <label for="images">Property Images (Select multiple):</label>
-            <input type="file" name="images[]" id="images" multiple><br><br>
-
-            <button type="submit">Add Property</button>
-        </form>
-    </section>
+        <section class="dashboard-content">
+            <h2><i class="fas fa-list-ul"></i> All Properties</h2>
+            <a href="add-property.php" class="btn"><i class="fas fa-plus-circle"></i> Add New Property</a>
+            <table class="property-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Price</th>
+                        <th>Location</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()) { ?>
+                        <tr>
+                            <td><?php echo $row['title']; ?></td>
+                            <td><?php echo $row['price']; ?></td>
+                            <td><?php echo $row['location']; ?></td>
+                            <td>
+                                <a href="edit-property.php?id=<?php echo $row['id']; ?>" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="delete-property.php?id=<?php echo $row['id']; ?>" class="delete-btn" onclick="return confirm('Are you sure?')"><i class="fas fa-trash-alt"></i> Delete</a>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </section>
+    </div>
 </body>
+<style>
+    /* General Body Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fc;
+    margin: 0;
+    padding: 0;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+}
+
+/* Header Styles */
+.dashboard-header {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+    font-size: 2em;
+    margin: 0;
+}
+
+.dashboard-nav {
+    display: flex;
+    gap: 20px;
+}
+
+.dashboard-nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+    transition: color 0.3s ease;
+}
+
+.dashboard-nav a:hover {
+    color: #0056b3;
+}
+
+.dashboard-nav a i {
+    margin-right: 8px;
+}
+
+/* Content Styles */
+.dashboard-content {
+    background-color: white;
+    padding: 30px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 1000px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.dashboard-content h2 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.dashboard-content .btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.dashboard-content .btn:hover {
+    background-color: #0056b3;
+}
+
+.property-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.property-table th, .property-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.property-table th {
+    background-color: #007bff;
+    color: white;
+}
+
+.property-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.property-table a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.property-table a.edit-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.property-table a.delete-btn:hover {
+    background-color: #f2d1d1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .dashboard-nav {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .dashboard-nav a {
+        font-size: 1.1em;
+    }
+
+    .dashboard-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .property-table th, .property-table td {
+        padding: 8px;
+    }
+}
+
+</style>
 </html>
