@@ -1,12 +1,9 @@
 <?php
-// Include the configuration file to connect to the database
-require '../config.php';  // Correct the path
+require '../config.php'; 
 
-// Retrieve property ID from URL parameter
 if (isset($_GET['id'])) {
     $property_id = $_GET['id'];
 
-    // Fetch property details from the database
     $query = "SELECT * FROM properties WHERE id = '$property_id'";
     $result = $conn->query($query);
 
@@ -17,7 +14,6 @@ if (isset($_GET['id'])) {
         exit;
     }
 
-    // Fetch property images
     $query_images = "SELECT * FROM property_images WHERE property_id = '$property_id'";
     $images_result = $conn->query($query_images);
 }
@@ -30,9 +26,10 @@ if (isset($_GET['id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Property</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
             margin: 0;
             padding: 0;
@@ -41,20 +38,21 @@ if (isset($_GET['id'])) {
         header {
             background-color: #007bff;
             color: white;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         header h1 {
             margin: 0;
-            font-size: 2em;
+            font-size: 2.5em;
         }
 
         nav a {
             color: white;
             text-decoration: none;
             margin: 0 15px;
-            font-size: 1.1em;
+            font-size: 1.2em;
         }
 
         nav a:hover {
@@ -71,7 +69,7 @@ if (isset($_GET['id'])) {
         }
 
         .property-details h2 {
-            font-size: 2em;
+            font-size: 2.2em;
             color: #333;
             margin-bottom: 20px;
         }
@@ -87,12 +85,17 @@ if (isset($_GET['id'])) {
             color: #333;
         }
 
+        .property-details p i {
+            margin-right: 8px;
+            color: #007bff;
+        }
+
         .property-images {
             margin-top: 30px;
         }
 
         .property-images h3 {
-            font-size: 1.6em;
+            font-size: 1.8em;
             color: #333;
         }
 
@@ -109,9 +112,24 @@ if (isset($_GET['id'])) {
             transform: scale(1.05);
         }
 
-        .property-images p {
-            color: #888;
+        .property-back-button {
+            margin: 20px 0;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
             font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .property-back-button i {
+            margin-right: 8px;
+        }
+
+        .property-back-button:hover {
+            background-color: #218838;
         }
 
         @media screen and (max-width: 768px) {
@@ -136,25 +154,26 @@ if (isset($_GET['id'])) {
     </style>
 </head>
 <body>
+
     <header>
         <h1>Property Details</h1>
         <nav>
-            <a href="../index.php">Home</a>
+            <a href="../index.php"><i class="fas fa-home"></i> Home</a>
         </nav>
     </header>
 
     <section class="property-details">
         <?php if (isset($property)) { ?>
             <h2><?php echo $property['title']; ?></h2>
-            <p><strong>Price:</strong> $<?php echo number_format($property['price']); ?></p>
-            <p><strong>Location:</strong> <?php echo $property['location']; ?></p>
-            <p><strong>Bedrooms:</strong> <?php echo $property['bedrooms']; ?></p>
-            <p><strong>Bathrooms:</strong> <?php echo $property['bathrooms']; ?></p>
-            <p><strong>Description:</strong> <?php echo nl2br($property['description']); ?></p>
-            <p><strong>Property Type:</strong> <?php echo $property['property_type']; ?></p>
+            <p><i class="fas fa-tag"></i><strong> Price:</strong> LKR <?php echo number_format($property['price']); ?></p>
+            <p><i class="fas fa-map-marker-alt"></i><strong> Location:</strong> <?php echo $property['location']; ?></p>
+            <p><i class="fas fa-bed"></i><strong> Bedrooms:</strong> <?php echo $property['bedrooms']; ?></p>
+            <p><i class="fas fa-bath"></i><strong> Bathrooms:</strong> <?php echo $property['bathrooms']; ?></p>
+            <p><i class="fas fa-info-circle"></i><strong> Description:</strong> <?php echo nl2br($property['description']); ?></p>
+            <p><i class="fas fa-home"></i><strong> Property Type:</strong> <?php echo $property['property_type']; ?></p>
 
             <div class="property-images">
-                <h3>Images</h3>
+                <h3><i class="fas fa-images"></i> Images</h3>
                 <?php if ($images_result->num_rows > 0) { ?>
                     <?php while ($image = $images_result->fetch_assoc()) { ?>
                         <img src="<?php echo $image['image_path']; ?>" alt="Property Image">
@@ -166,10 +185,19 @@ if (isset($_GET['id'])) {
         <?php } else { ?>
             <p>Property not found.</p>
         <?php } ?>
+
+        <!-- Back Button -->
+        <a href="javascript:history.back()" class="property-back-button">
+            <i class="fas fa-arrow-left"></i> Back to Property List
+        </a>
     </section>
+
 </body>
+
+<?php include '../footer.php'; ?>
+
 </html>
 
 <?php
-$conn->close();  // Close the database connection
+$conn->close(); 
 ?>

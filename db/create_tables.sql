@@ -14,6 +14,9 @@ CREATE TABLE properties (
     description TEXT
 );
 
+ALTER TABLE properties ADD COLUMN property_type ENUM('Sale', 'Rent') NOT NULL;
+
+
 CREATE TABLE property_images (
     id INT AUTO_INCREMENT PRIMARY KEY,
     property_id INT,

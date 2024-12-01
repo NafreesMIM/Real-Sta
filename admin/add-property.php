@@ -16,24 +16,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $description = $_POST['description'];
     $property_type = $_POST['property_type'];
 
-    // Insert property data into the properties table
     $query = "INSERT INTO properties (title, price, location, bedrooms, bathrooms, description, property_type) 
               VALUES ('$title', '$price', '$location', '$bedrooms', '$bathrooms', '$description', '$property_type')";
     if ($conn->query($query) === TRUE) {
-        $property_id = $conn->insert_id; // Get the property ID for image insertion
+        $property_id = $conn->insert_id; 
     
-        // Handle image uploads
         if (isset($_FILES['images']) && count($_FILES['images']['name']) > 0) {
-            $target_dir = "../assets/images/properties/"; // Directory to store images
+            $target_dir = "../assets/images/properties/"; 
     
-            // Loop through each uploaded image
             foreach ($_FILES['images']['name'] as $key => $image_name) {
-                $image_tmp = $_FILES['images']['tmp_name'][$key]; // Get the temporary file path
-                $image_path = $target_dir . basename($image_name); // Define the target path
+                $image_tmp = $_FILES['images']['tmp_name'][$key]; 
+                $image_path = $target_dir . basename($image_name); 
     
-                // Move the uploaded image to the target directory
                 if (move_uploaded_file($image_tmp, $image_path)) {
-                    // Insert the image path into the property_images table
                     $sql_image = "INSERT INTO property_images (property_id, image_path) VALUES ('$property_id', '$image_path')";
                     if ($conn->query($sql_image) !== TRUE) {
                         echo "Error: " . $conn->error;
@@ -42,9 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     
-        // Redirect to manage-properties.php after success
         header("Location: manage-properties.php");
-        exit; // Make sure no further code is executed
+        exit; 
     } else {
         echo "Error: " . $conn->error;
     }
@@ -58,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Property</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -108,7 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 </body>
 <style>
-    /* General Body Styles */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f7fc;
@@ -116,7 +108,6 @@ body {
     padding: 0;
 }
 
-/* Dashboard Container */
 .dashboard-container {
     display: flex;
     flex-direction: column;
@@ -124,7 +115,6 @@ body {
     padding: 30px;
 }
 
-/* Header Styles */
 .dashboard-header {
     width: 100%;
     background-color: #007bff;
@@ -162,20 +152,19 @@ body {
     margin-right: 8px;
 }
 
-/* Content Styles */
 .property-form {
     background-color: white;
     padding: 20px;
     margin-top: 20px;
     width: 100%;
-    max-width: 600px; /* Reduced the max width */
+    max-width: 600px; 
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
 .property-form h2 {
-    font-size: 1.8em; /* Slightly smaller font size */
+    font-size: 1.8em; 
     color: #333;
     margin-bottom: 20px;
 }
@@ -215,7 +204,6 @@ body {
     margin-right: 8px;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .dashboard-header {
         flex-direction: column;

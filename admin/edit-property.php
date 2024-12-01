@@ -23,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               property_type='$property_type' WHERE id='$id'";
 
     if ($conn->query($query) === TRUE) {
-        // Redirect to manage-properties.php after successful update
         header("Location: manage-properties.php");
         exit;
     } else {
@@ -31,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Fetch property data for editing
 $sql = "SELECT * FROM properties WHERE id = '$id'";
 $result = $conn->query($sql);
 $property = $result->fetch_assoc();
@@ -43,11 +41,9 @@ $property = $result->fetch_assoc();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Property</title>
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
-        /* General Body Styles */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f7f9fc;
@@ -55,7 +51,6 @@ $property = $result->fetch_assoc();
             padding: 0;
         }
 
-        /* Header */
         header {
             background-color: #007bff;
             color: white;
@@ -84,7 +79,6 @@ $property = $result->fetch_assoc();
             color: #f8f8f8;
         }
 
-        /* Property Form */
         .property-form {
             background-color: white;
             padding: 30px;
@@ -138,7 +132,6 @@ $property = $result->fetch_assoc();
             margin-right: 10px;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .property-form {
                 width: 90%;

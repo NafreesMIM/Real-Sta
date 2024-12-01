@@ -13,12 +13,10 @@
     <section class="contact-section">
         <h2>Contact Information</h2>
 
-        <!-- Contact Info -->
         <div class="contact-info">
             <div class="info-item">
                 <h3>Map</h3>
                 <div class="map-container">
-                    <!-- Embed Google Map -->
                     <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCXhCmNigBHqtdbglczrVi8xC-QcJce-9M&q=52+Nanayakkara+Mawatha,+Sri+Jayawardenepura+Kotte" 
                         width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                 </div>
@@ -42,7 +40,6 @@
 </html>
 
 <style>
-    /* General Styles */
     body {
         font-family: 'Arial', sans-serif;
         margin: 0;
@@ -97,7 +94,6 @@
         border: 0;
     }
 
-    /* Mobile responsiveness */
     @media (max-width: 768px) {
         .contact-info {
             grid-template-columns: 1fr;

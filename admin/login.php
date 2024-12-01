@@ -30,28 +30,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="login-container">
         <div class="login-form">
-            <h2>Admin Login</h2>
+            <h2><i class="fas fa-user-lock"></i> Admin Login</h2>
             <?php if (isset($error)) echo "<p class='error'>$error</p>"; ?>
             <form method="POST" action="login.php">
                 <div class="input-group">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" id="username" required placeholder="Enter your username">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="username" id="username" required placeholder="Enter your username" autofocus>
                 </div>
                 <div class="input-group">
-                    <label for="password">Password</label>
+                    <i class="fas fa-lock"></i>
                     <input type="password" name="password" id="password" required placeholder="Enter your password">
                 </div>
-                <button type="submit" class="login-btn">Login</button>
+                <button type="submit" class="login-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
             </form>
         </div>
     </div>
 </body>
 <style>
-    /* General Body and Background Styles */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -63,7 +63,6 @@ body {
     height: 100vh;
 }
 
-/* Login Container */
 .login-container {
     display: flex;
     justify-content: center;
@@ -71,19 +70,18 @@ body {
     height: 100%;
 }
 
-/* Form Container */
 .login-form {
     background-color: white;
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     text-align: center;
 }
 
 .login-form h2 {
-    font-size: 2em;
+    font-size: 2.2em;
     margin-bottom: 20px;
     color: #333;
 }
@@ -94,39 +92,39 @@ body {
     margin-bottom: 10px;
 }
 
-/* Input Fields */
 .input-group {
     margin-bottom: 20px;
     text-align: left;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
 }
 
-.input-group label {
-    font-size: 1em;
-    color: #555;
-    margin-bottom: 8px;
-    display: block;
+.input-group i {
+    font-size: 1.2em;
+    color: #007bff;
+    margin-right: 10px;
 }
 
 .input-group input {
     width: 100%;
     padding: 12px;
     font-size: 1em;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
+    border: none;
+    outline: none;
     transition: border-color 0.3s ease;
 }
 
 .input-group input:focus {
     border-color: #007bff;
-    outline: none;
 }
 
-/* Button */
 .login-btn {
     width: 100%;
     padding: 14px;
-    font-size: 1.1em;
+    font-size: 1.2em;
     color: white;
     background-color: #007bff;
     border: none;
@@ -135,11 +133,14 @@ body {
     transition: background-color 0.3s ease;
 }
 
+.login-btn i {
+    margin-right: 10px;
+}
+
 .login-btn:hover {
     background-color: #0056b3;
 }
 
-/* Responsive Design for Smaller Screens */
 @media (max-width: 600px) {
     .login-form {
         padding: 30px;
@@ -159,6 +160,5 @@ body {
         padding: 12px;
     }
 }
-
 </style>
 </html>

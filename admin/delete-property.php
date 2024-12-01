@@ -9,7 +9,6 @@ require '../config.php';
 
 $id = $_GET['id'];
 
-// Delete property
 $sql = "DELETE FROM properties WHERE id = '$id'";
 if ($conn->query($sql) === TRUE) {
     header("Location: manage-properties.php");

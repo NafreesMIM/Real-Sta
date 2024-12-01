@@ -7,7 +7,6 @@ if (!isset($_SESSION['admin'])) {
 
 require '../config.php';
 
-// Fetch all properties from the database
 $sql = "SELECT * FROM properties";
 $result = $conn->query($sql);
 ?>
@@ -19,7 +18,6 @@ $result = $conn->query($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Properties</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -62,7 +60,6 @@ $result = $conn->query($sql);
     </div>
 </body>
 <style>
-    /* General Body Styles */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f7fc;
@@ -70,7 +67,6 @@ body {
     padding: 0;
 }
 
-/* Dashboard Container */
 .dashboard-container {
     display: flex;
     flex-direction: column;
@@ -78,7 +74,6 @@ body {
     padding: 30px;
 }
 
-/* Header Styles */
 .dashboard-header {
     width: 100%;
     background-color: #007bff;
@@ -116,7 +111,6 @@ body {
     margin-right: 8px;
 }
 
-/* Content Styles */
 .dashboard-content {
     background-color: white;
     padding: 30px;
@@ -187,7 +181,6 @@ body {
     background-color: #f2d1d1;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .dashboard-header {
         flex-direction: column;

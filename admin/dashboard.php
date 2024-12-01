@@ -13,7 +13,6 @@ if (!isset($_SESSION['admin'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -33,7 +32,6 @@ if (!isset($_SESSION['admin'])) {
     </div>
 </body>
 <style>
-    /* General Body Styles */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f7fc;
@@ -41,7 +39,6 @@ body {
     padding: 0;
 }
 
-/* Dashboard Container */
 .dashboard-container {
     display: flex;
     flex-direction: column;
@@ -49,7 +46,6 @@ body {
     padding: 30px;
 }
 
-/* Header Styles */
 .dashboard-header {
     width: 100%;
     background-color: #007bff;
@@ -87,7 +83,6 @@ body {
     margin-right: 8px;
 }
 
-/* Content Styles */
 .dashboard-content {
     background-color: white;
     padding: 30px;
@@ -115,7 +110,6 @@ body {
     color: #007bff;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .dashboard-header {
         flex-direction: column;
